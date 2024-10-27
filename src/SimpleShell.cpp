@@ -111,13 +111,25 @@ void SimpleShell::run()
             continue; // Skip empty input
         }
         
-        // Check for "exit" command to terminate the shell
+        // Check for "exit" command to terminate the shell immediately
         if (tokens[0] == "exit") {
             cout << "Exiting shell..." << endl;
             break;
         }
         
-        // Execute the user command
+        // Handle "cd" command in parent loop
+        if (tokens[0] == "cd") {
+            if (tokens.size() > 1) {
+                if (chdir(tokens[1].c_str()) != 0) {
+                    perror("cd function failed");
+                }
+            } else {
+                cerr << "cd: missing argument" << endl;
+            }
+            continue;
+        }
+
+        // Execute user command tokens
         execute(tokens);
     }
 }
