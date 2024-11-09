@@ -7,6 +7,7 @@
  *    ps2 - Simple Shell
  */
 #include "../include/SimpleShell.h"
+#include <fcntl.h>
 using namespace std;
 
 /**
@@ -39,19 +40,70 @@ void SimpleShell::execute(const vector<string>& argv)
             cerr << "Error: No command to execute" << endl;
             _exit(1);
         }
+
+        // Variables for file redirection
+        int input_fd = -1;
+        int output_fd = -1;
         
         // Prepare arguments for execvp (must end with nullptr)
         vector<const char*> args;
-        for (const auto& arg : argv) {
-            args.push_back(arg.c_str());
+
+        // I/O Redirection
+        for (size_t i = 0; i < argv.size(); ++i) {
+            if (argv[i] == "<" && i + 1 < argv.size()) {
+                input_fd = open(argv[i + 1].c_str(), O_RDONLY);
+                if (input_fd == -1) {
+                    perror("Failed to open input file");
+                    _exit(1);
+                }
+                if (dup2(input_fd, STDIN_FILENO) == -1) {
+                    perror("Failed to redirect input");
+                    _exit(1);
+                }
+                i++; // Skip the filename
+            } else if (argv[i] == ">" && i + 1 < argv.size()) {
+                output_fd = open(argv[i + 1].c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                if (output_fd == -1) {
+                    perror("Failed to open output file");
+                    _exit(1);
+                }
+                if (dup2(output_fd, STDOUT_FILENO) == -1) {
+                    perror("Failed to redirect output");
+                    _exit(1);
+                }
+                i++; // Skip the filename
+            } else {
+                args.push_back(argv[i].c_str());
+            }
         }
+        
         args.push_back(nullptr);
+
+        // Execute cd (change directory) commands
+        if (argv[0] == "cd") {
+            if(argv[1].rfind("~/", 0) == 0) {
+                const char* home = getenv("HOME");
+                if (home == nullptr) {
+                    std::cerr << "Error: HOME environment variable not set." << std::endl;
+                    _exit(1);
+                }
+                argv[1] = std::string(home) + argv[1].erase(0, 1);
+            }
+            if (chdir((argv[1]).c_str()) == -1) {
+                perror("chdir failed"); // Print error message if chdir fails
+                _exit(1);
+            }
+        }
         
         // Execute *any valid command* using execvp
         if (execvp(argv[0].c_str(), const_cast<char* const*>(args.data())) == -1) {
             perror("execvp failed");
             _exit(1);
         }
+        
+        // Close any opened files
+        if (input_fd != -1) close(input_fd);
+        if (output_fd != -1) close(output_fd);
     }
     else {
         perror("fork failed"); // Error handling if fork fails
