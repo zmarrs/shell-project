@@ -86,15 +86,16 @@ void SimpleShell::execute(const vector<string>& argv)
         if (argv[0] == "cd") {
             if (argv.size() > 1) {
                 // Handle "~" for home directory expansion
-                if (argv[1].rfind("~/", 0) == 0) {
+                string target_dir = argv[1]; // Copy argv[1] to a mutable string
+                if (target_dir.rfind("~/", 0) == 0) {
                     const char* home = getenv("HOME");
                     if (home == nullptr) {
                         cerr << "Error: HOME environment variable not set." << endl;
                         _exit(1);
                     }
-                    argv[1] = std::string(home) + argv[1].erase(0, 1);
+                    target_dir = std::string(home) + target_dir.substr(1); // Replace ~ with home directory
                 }
-                if (chdir(argv[1].c_str()) == -1) {
+                if (chdir(target_dir.c_str()) == -1) {
                     perror("cd failed");
                     _exit(1);
                 }
