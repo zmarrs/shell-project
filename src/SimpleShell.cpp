@@ -8,6 +8,9 @@
  */
 #include "../include/SimpleShell.h"
 #include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 using namespace std;
 
 /**
@@ -79,20 +82,48 @@ void SimpleShell::execute(const vector<string>& argv)
         
         args.push_back(nullptr);
 
-        // Execute cd (change directory) commands
+        // Execute cd (change directory) command
         if (argv[0] == "cd") {
-            if(argv[1].rfind("~/", 0) == 0) {
-                const char* home = getenv("HOME");
-                if (home == nullptr) {
-                    std::cerr << "Error: HOME environment variable not set." << std::endl;
+            if (argv.size() > 1) {
+                // Handle "~" for home directory expansion
+                if (argv[1].rfind("~/", 0) == 0) {
+                    const char* home = getenv("HOME");
+                    if (home == nullptr) {
+                        cerr << "Error: HOME environment variable not set." << endl;
+                        _exit(1);
+                    }
+                    argv[1] = std::string(home) + argv[1].erase(0, 1);
+                }
+                if (chdir(argv[1].c_str()) == -1) {
+                    perror("cd failed");
                     _exit(1);
                 }
-                argv[1] = std::string(home) + argv[1].erase(0, 1);
-            }
-            if (chdir((argv[1]).c_str()) == -1) {
-                perror("chdir failed"); // Print error message if chdir fails
+            } else {
+                cerr << "cd: missing argument" << endl;
                 _exit(1);
             }
+        }
+        // Handle "pwd" to print working directory
+        else if (argv[0] == "pwd") {
+            char cwd[1024];
+            if (getcwd(cwd, sizeof(cwd)) != nullptr) {
+                cout << cwd << endl;
+            } else {
+                perror("getcwd failed");
+            }
+            _exit(0);
+        }
+        // Handle "mkdir" to create directories
+        else if (argv[0] == "mkdir") {
+            if (argv.size() < 2) {
+                cerr << "mkdir: missing directory name" << endl;
+                _exit(1);
+            }
+            if (mkdir(argv[1].c_str(), 0777) == -1) {
+                perror("mkdir failed");
+                _exit(1);
+            }
+            _exit(0);
         }
         
         // Execute *any valid command* using execvp
@@ -168,7 +199,7 @@ void SimpleShell::run()
             cout << "Exiting shell..." << endl;
             break;
         }
-        
+
         // Handle "cd" command in parent loop
         if (tokens[0] == "cd") {
             if (tokens.size() > 1) {
