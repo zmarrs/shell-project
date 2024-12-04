@@ -1,0 +1,43 @@
+Zachary Marrs
+CS 461 P 001 - Operating Systems
+Professor Essa Imhmed
+12/3/2024
+
+PS5 - Simple Shell Testing Report
+
+Overview
+This report documents the testing process for my semester long Simple Shell Program project. The tests were conducted on macOS using a Bash script the automates various scenarios expected inputs including basic commands, such as built-in shell 
+features to list and print the working directory and its contexts, change directory, file reading and writing, piping, and invalid input error handling.  Overall there are 10 unit tests conducted which verify these essential functions.
+
+
+Testing Environment
+•	Operating System: macOS 10.13 High Sierra 
+•	Device: MacBook Pro 2016
+•	Compiler: g++ 
+•	Shell Executable: SimpleShell
+•	Testing Method: Automated input script executed through Bash.
+
+
+Test Cases and Results
+Test   ID	  Description	                                      Command	                                    Expected Result	                                          Actual Result      	Status
+T1	  Built-in list directory command	                        ls	                                        Lists contents of the current directory	                  As expected	        PASS
+T2	  Built-in print working directory command	              pwd	                                        Prints the current working directory                    	As expected        	PASS
+T3	  Writing text to a file	                                echo Hello > testfile	                      Creates a file testfile containing the text “Hello”	      As expected	        PASS
+T4	  Read from a file	                                      cat testfile	                              Displays the content of testfile (“Hello”)	              As expected	        PASS
+T5	  Piping – command chaining with echo and tr	            ‘echo hello | tr '[:lower:]' '[:upper:]'`  	Outputs "HELLO"	                                          As expected	        PASS
+T6	  Built-in change directory command	                      cd / && pwd	                                Change to root directory and prints /	                    As expected	        PASS
+T7	  Invalid Command 	                                      invalidcommand	                            "execvp failed: No such file or directory"             	  As expected	        PASS
+T8	  Built-in make a new directory command	                  mkdir testdir	                              Creates a directory testdir	                              As expected	        PASS
+T9	  Error handling: File not found in redirection	          cat non_existent_file                       “Failed to open input file: No such file or directory.”	  As expected	        PASS
+T10	  Exit command	Exit	Exits shell and terminates program	As expected	PASS
+
+
+Summary of Results
+•	Total Test: 10 
+•	Passed: 10
+•	Failed: 0
+
+
+Conclusion
+The SimpleShell program successfully passed all test cases, demonstrating it capability in handling basic shell operations, including cd, ls, pwd, echo, cat, in addition to handling piping and exiting the shell as well as basic input error handling.
+This implementation of the simple shell with piping is ready for final submission. 
