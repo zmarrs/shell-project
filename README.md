@@ -12,6 +12,7 @@ This is a simple shell program written in C++ as part of an assignment for an Op
 - `SimpleShell.h`: Header file containing the definition of the `SimpleShell` class and its methods.
 - `SimpleShell.cpp`: Source file containing the implementation of the `SimpleShell` class, updated to include all commands.
 - `Makefile`: File used to compile and run the program via the `make` command.
+- `test.sh`: A bash script which runs input tests on expected inputed shell commands including invalid commands and logs the test results.
 
 ## How to Compile and Run
 
