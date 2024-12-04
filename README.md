@@ -13,6 +13,7 @@ This is a simple shell program written in C++ as part of an assignment for an Op
 - `SimpleShell.cpp`: Source file containing the implementation of the `SimpleShell` class, updated to include all commands.
 - `Makefile`: File used to compile and run the program via the `make` command.
 - `test.sh`: A bash script which runs input tests on expected inputed shell commands including invalid commands and logs the test results.
+- `test_report.txt`: A test report detailing the unit testing methodology as well as the results of unit testing. 
 
 ## How to Compile and Run
 
