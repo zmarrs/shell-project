@@ -1,11 +1,8 @@
 # Simple Shell Program
 
- Zachary Marrs
-CS 461 P 001 - Operating Systems
-Professor Essa Imhmed
-11/22/2024
+Author: Zachary Marrs
 
-This is a simple shell program written in C++ as part of an assignment for an Operating Systems course at CNM. The program implements basic shell functionality such as reading commands from the user, parsing the input, and executing commands by creating child processes. It is the start of a larger shell program that will be impleneted over further assignments throughout the semester. Functionality has been extended to include I/O redirection, allowing standard output to be redirected to an output file. Additional functionality added to include the ability to send output to another program.  
+This is a simple shell program written in C++ program implements basic shell functionality such as reading commands from the user, parsing the input, and executing commands by creating child processes. It is the start of a larger shell program that will be impleneted over further assignments throughout the semester. Functionality has been extended to include I/O redirection, allowing standard output to be redirected to an output file. Additional functionality added to include the ability to send output to another program.  
 
 ## Files Included
 
